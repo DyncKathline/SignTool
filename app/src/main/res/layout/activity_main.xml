@@ -26,13 +26,23 @@
         app:layout_constraintTop_toBottomOf="@id/et_input"
         android:onClick="onClick"/>
 
+    <Switch
+        android:id="@+id/switch_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="是否显示:"
+        android:checked="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_get_signature_key_hash" />
+
     <ScrollView
         android:id="@+id/sv_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_get_signature_key_hash">
+        app:layout_constraintTop_toBottomOf="@+id/switch_show">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -158,4 +168,5 @@
         android:textColor="#FF808080"
         android:alpha="0.4"
         android:text="@string/powered_by"/>
+
 </android.support.constraint.ConstraintLayout>

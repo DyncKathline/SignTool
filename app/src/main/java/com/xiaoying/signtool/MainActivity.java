@@ -18,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int RC_HISTORY = 1000;
     private static final int RC_SELECT_APP = 1001;
 
+    private Switch mSwitch;
     private EditText mEtInput;
     private TextView mTvMsg;
     private TextView mTvKeyHash;
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
 
+        mSwitch = findViewById(R.id.switch_show);
         mEtInput = findViewById(R.id.et_input);
         mTvMsg = findViewById(R.id.tv_msg);
         mTvKeyHash = findViewById(R.id.tv_key_hash);
@@ -125,6 +129,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rippleView(mTvMD5);
         rippleView(mTvSHA1);
         rippleView(mTvSHA256);
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                getSignatureInfo();
+            }
+        });
     }
 
     /**
@@ -162,21 +172,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e("KeyHash:", keyHash);
                 mTvKeyHash.setText(keyHash);
 
+                String split = mSwitch.isChecked() ? ":" : "";
+
                 md = MessageDigest.getInstance("MD5");
                 md.update(signature.toByteArray());
-                md5FingerPrint = convert2HexFormatted(md.digest());
+                md5FingerPrint = convert2HexFormatted(md.digest(), split);
                 Log.e("MD5:", md5FingerPrint);
                 mTvMD5.setText(md5FingerPrint);
 
                 md = MessageDigest.getInstance("SHA-1");
                 md.update(signature.toByteArray());
-                sha1FingerPrint = convert2HexFormatted(md.digest());
+                sha1FingerPrint = convert2HexFormatted(md.digest(), split);
                 Log.e("SHA-1:", sha1FingerPrint);
                 mTvSHA1.setText(sha1FingerPrint);
 
                 md = MessageDigest.getInstance("SHA-256");
                 md.update(signature.toByteArray());
-                sha256FingerPrint = convert2HexFormatted(md.digest());
+                sha256FingerPrint = convert2HexFormatted(md.digest(), split);
                 Log.e("SHA-256:", sha256FingerPrint);
                 mTvSHA256.setText(sha256FingerPrint);
 
@@ -202,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param array 签名byte数组
      * @return 十六进制字符串，每两位用":"分隔开
      */
-    private static String convert2HexFormatted(byte[] array) {
+    private static String convert2HexFormatted(byte[] array, String split) {
         if(null == array) {
             return null;
         }
@@ -222,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 hex = hex.substring(hexLength - 2, hexLength);
             }
             str.append(hex.toUpperCase())
-                    .append(":"); // 添加":"分隔符
+                    .append(split); // 添加":"分隔符
         }
         str.replace(str.length() - 1, str.length(), ""); // 去掉最后一个多余的":"分割符
         return str.toString();
